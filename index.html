@@ -325,9 +325,9 @@
         line_linked: {
           enable: true,
           distance: 150,
-          color: '#a0907a',
-          opacity: 0.4,
-          width: 1.5
+          color: '#6b5f52',
+          opacity: 0.5,
+          width: 2
         },
         move: {
           enable: true,
@@ -359,13 +359,24 @@
         },
         modes: {
           grab: {
-            distance: 140,
+            distance: 200,
             line_linked: {
-              opacity: 0.5
+              opacity: 1
             }
           },
           push: {
-            particles_nb: 4
+            particles_nb: 8
+          },
+          repulse: {
+            distance: 100,
+            duration: 0.4
+          },
+          bubble: {
+            distance: 200,
+            size: 8,
+            duration: 2,
+            opacity: 0.8,
+            speed: 3
           }
         }
       },
