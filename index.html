@@ -14,12 +14,10 @@
       body {
         font-family: 'Inter', sans-serif;
         background-color: #f2ead3;
-        background-image: 
-          radial-gradient(circle at 25% 25%, rgba(139, 117, 97, 0.03) 0%, transparent 50%),
-          radial-gradient(circle at 75% 75%, rgba(139, 117, 97, 0.03) 0%, transparent 50%),
-          url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><defs><filter id="noise"><feTurbulence baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0"/></filter></defs><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.02"/></svg>');
         color: #4a453f;
         overflow-x: hidden;
+        margin: 0;
+        padding: 0;
       }
       
       .container {
@@ -27,6 +25,7 @@
         display: flex;
         flex-direction: column;
         position: relative;
+        z-index: 1;
       }
       
       .header {
@@ -150,12 +149,12 @@
         position: fixed;
         top: 0;
         left: 0;
-        right: 0;
-        bottom: 0;
+        width: 100%;
+        height: 100%;
         opacity: 0.5;
         pointer-events: none;
-        z-index: -1;
-        background-image: url('./main-Background.jpeg');
+        z-index: 0;
+        background-image: url('main-Background.jpeg');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -169,7 +168,7 @@
         bottom: 0;
         opacity: 0.15;
         pointer-events: none;
-        z-index: -2;
+        z-index: 0;
         background-image: 
           linear-gradient(45deg, transparent 48%, rgba(160, 144, 122, 0.1) 49%, rgba(160, 144, 122, 0.1) 51%, transparent 52%),
           linear-gradient(-45deg, transparent 48%, rgba(160, 144, 122, 0.1) 49%, rgba(160, 144, 122, 0.1) 51%, transparent 52%),
