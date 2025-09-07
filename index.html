@@ -218,17 +218,23 @@
         const html = document.documentElement;
         const helloText = document.querySelector('.hello-text');
         const subtitle = document.querySelector('.subtitle');
+        const langButtonKo = document.querySelector('span[lang="ko"]');
+        const langButtonEn = document.querySelector('span[lang="en"]');
         
         if (html.lang === 'ko') {
           html.lang = 'en';
           document.title = 'Hello. AID';
           helloText.textContent = 'Hello.';
           subtitle.innerHTML = 'AI-powered solutions for<br>intelligent grid monitoring.';
+          langButtonKo.style.display = 'none';
+          langButtonEn.style.display = 'inline';
         } else {
           html.lang = 'ko';
           document.title = 'Hello. AID';
           helloText.textContent = '안녕하세요.';
           subtitle.innerHTML = 'AI 기반의 지능형<br>전력망 모니터링 솔루션.';
+          langButtonKo.style.display = 'inline';
+          langButtonEn.style.display = 'none';
         }
       }
     </script>
