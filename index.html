@@ -65,6 +65,135 @@
          const heroBg = document.getElementById('hero-bg');
          heroBg.style.transform = 'rotateY(0deg) rotateX(0deg) scale(1.1)';
       }
+
+      // Particle Animation
+      class ParticleSystem {
+        constructor(canvas) {
+          this.canvas = canvas;
+          this.ctx = canvas.getContext('2d');
+          this.particles = [];
+          this.mouse = { x: 0, y: 0 };
+          this.resize();
+          this.init();
+          this.animate();
+          
+          window.addEventListener('resize', () => this.resize());
+          canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            this.mouse.x = e.clientX - rect.left;
+            this.mouse.y = e.clientY - rect.top;
+          });
+        }
+        
+        resize() {
+          this.canvas.width = this.canvas.offsetWidth;
+          this.canvas.height = this.canvas.offsetHeight;
+        }
+        
+        init() {
+          this.particles = [];
+          const particleCount = Math.floor((this.canvas.width * this.canvas.height) / 15000);
+          
+          for (let i = 0; i < particleCount; i++) {
+            this.particles.push({
+              x: Math.random() * this.canvas.width,
+              y: Math.random() * this.canvas.height,
+              vx: (Math.random() - 0.5) * 0.5,
+              vy: (Math.random() - 0.5) * 0.5,
+              size: Math.random() * 2 + 0.5,
+              opacity: Math.random() * 0.3 + 0.1,
+              baseOpacity: Math.random() * 0.3 + 0.1,
+              pulse: Math.random() * Math.PI * 2
+            });
+          }
+        }
+        
+        animate() {
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+          
+          // Update and draw particles
+          this.particles.forEach((particle, index) => {
+            // Mouse interaction
+            const dx = this.mouse.x - particle.x;
+            const dy = this.mouse.y - particle.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < 150) {
+              const force = (150 - distance) / 150;
+              particle.vx += (dx / distance) * force * 0.01;
+              particle.vy += (dy / distance) * force * 0.01;
+              particle.opacity = Math.min(particle.baseOpacity + force * 0.3, 0.8);
+            } else {
+              particle.opacity += (particle.baseOpacity - particle.opacity) * 0.02;
+            }
+            
+            // Update position
+            particle.x += particle.vx;
+            particle.y += particle.vy;
+            
+            // Pulse effect
+            particle.pulse += 0.02;
+            const pulseOpacity = particle.opacity + Math.sin(particle.pulse) * 0.05;
+            
+            // Boundary wrap
+            if (particle.x < 0) particle.x = this.canvas.width;
+            if (particle.x > this.canvas.width) particle.x = 0;
+            if (particle.y < 0) particle.y = this.canvas.height;
+            if (particle.y > this.canvas.height) particle.y = 0;
+            
+            // Apply friction
+            particle.vx *= 0.99;
+            particle.vy *= 0.99;
+            
+            // Draw particle
+            this.ctx.save();
+            this.ctx.globalAlpha = Math.max(0, pulseOpacity);
+            this.ctx.fillStyle = '#0ba5e9';
+            this.ctx.shadowBlur = 10;
+            this.ctx.shadowColor = '#0ba5e9';
+            this.ctx.beginPath();
+            this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            this.ctx.fill();
+            this.ctx.restore();
+          });
+          
+          // Draw connections
+          this.drawConnections();
+          
+          requestAnimationFrame(() => this.animate());
+        }
+        
+        drawConnections() {
+          this.particles.forEach((particle1, i) => {
+            this.particles.slice(i + 1).forEach(particle2 => {
+              const dx = particle1.x - particle2.x;
+              const dy = particle1.y - particle2.y;
+              const distance = Math.sqrt(dx * dx + dy * dy);
+              
+              if (distance < 120) {
+                const opacity = (120 - distance) / 120 * 0.1;
+                this.ctx.save();
+                this.ctx.globalAlpha = opacity;
+                this.ctx.strokeStyle = '#0ba5e9';
+                this.ctx.lineWidth = 0.5;
+                this.ctx.beginPath();
+                this.ctx.moveTo(particle1.x, particle1.y);
+                this.ctx.lineTo(particle2.x, particle2.y);
+                this.ctx.stroke();
+                this.ctx.restore();
+              }
+            });
+          });
+        }
+      }
+
+      // Initialize particle system when page loads
+      document.addEventListener('DOMContentLoaded', () => {
+        const canvas = document.getElementById('particle-canvas');
+        if (canvas) {
+          new ParticleSystem(canvas);
+        }
+      });
     </script>
 </head>
 <body class="bg-[#0D1117]">
@@ -98,7 +227,10 @@
 </header>
 <main class="flex-1">
 <section class="relative min-h-[60vh] flex items-center justify-center text-center px-4 sm:px-6 lg:px-8 overflow-hidden" id="hero-section" onmouseleave="resetTransform()" onmousemove="handleMouseMove(event)">
-<div class="absolute inset-[-20px] bg-cover bg-center" id="hero-bg" style='background-image: linear-gradient(to top, rgba(13, 17, 23, 1) 0%, rgba(13, 17, 23, 0.6) 50%, rgba(13, 17, 23, 0) 100%), url("image-substation.jpg"); transform: scale(1.1);'></div>
+<div class="absolute inset-[-20px]" id="hero-bg" style="transform: scale(1.1);">
+  <canvas id="particle-canvas" class="w-full h-full"></canvas>
+  <div class="absolute inset-0 bg-gradient-to-t from-[#0D1117] via-[#0D1117]/60 to-transparent"></div>
+</div>
 <div class="relative z-10 flex flex-col items-center gap-6 max-w-4xl mx-auto">
 <h1 class="text-white text-5xl md:text-7xl font-black leading-tight tracking-[-0.033em] transition-transform duration-300 transform hover:scale-105">
 <span lang="ko">AI 기반 전력망 모니터링</span>
